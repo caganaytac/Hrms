@@ -1,41 +1,51 @@
 package hrms.entities.concretes;
 
+import hrms.core.entities.User;
+import hrms.entities.constants.Messages;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import javax.validation.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.util.List;
+
+import java.time.LocalDateTime;
+
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Entity
-@Table(name = "Corporates")
+@Table(name = "corporates")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "jobAdverts" })
 public class Corporate {
     @Id
-    @GeneratedValue
-    @Column(name = "Id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
 
-    @Column(name = "UserId")
-    private int userId;
+    @NotEmpty(message = Messages.userNotEmpty)
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @Column(name = "Website")
-    private String website;
-
-    @Column(name = "CompanyName")
+    @NotEmpty(message = Messages.companyNameNotEmpty)
+    @Column(name = "company_name")
     private String companyName;
 
-    @Column(name = "CreateDate")
-    private Date createDate;
+    @NotEmpty(message = Messages.websiteNotEmpty)
+    @Column(name = "website")
+    private String website;
 
-    @Column(name = "Active")
+    @Column(name = "create_date")
+    private LocalDateTime createDate;
+
+    @Column(name = "active")
     private boolean active;
 
-    public Corporate(int id, int userId, String website, String companyName, Date createDate, boolean active) {
-        this.id = id;
-        this.userId = userId;
-        this.website = website;
-        this.companyName = companyName;
-        this.createDate = createDate;
-        this.active = active;
-    }
-    public Corporate(){}
+    @OneToMany(mappedBy = "city")
+    private List<JobAdvert> jobAdverts;
 }

@@ -1,33 +1,45 @@
 package hrms.entities.concretes;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.util.List;
+
+import java.time.LocalDateTime;
+
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Entity
-@Table(name = "JobPositions")
+@Table(name = "job_positions")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "individualJobPositions", "jobAdverts",
+        "individualJobExperiences" })
 public class JobPosition {
     @Id
-    @GeneratedValue
-    @Column(name = "Id")
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private short id;
 
-    @Column(name = "Name")
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "CreateDate")
-    private Date createDate;
+    @Column(name = "create_date")
+    private LocalDateTime createDate;
 
-    @Column(name = "Active")
+    @Column(name = "active")
     private boolean active;
 
-    public JobPosition(int id, String name, Date createDate, boolean active) {
-        this.id = id;
-        this.name = name;
-        this.createDate = createDate;
-        this.active = active;
-    }
-    public JobPosition(){}
+    @OneToMany(mappedBy = "jobPosition")
+    private List<IndividualJobPosition> individualJobPositions;
+
+    @OneToMany(mappedBy = "jobPosition")
+    private List<JobAdvert> jobAdverts;
+
+    @OneToMany(mappedBy = "jobPosition")
+    private List<IndividualJobExperience> individualJobExperiences;
 }

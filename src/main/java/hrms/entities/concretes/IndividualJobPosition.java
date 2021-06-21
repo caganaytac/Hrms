@@ -1,35 +1,34 @@
 package hrms.entities.concretes;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Entity
-@Table(name = "IndividualJobPositions")
+@Table(name = "individual_job_positions")
 public class IndividualJobPosition {
     @Id
-    @GeneratedValue
-    @Column(name = "Id")
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private long id;
 
-    @Column(name = "IndividualId")
-    private int individualId;
+    @ManyToOne
+    @JoinColumn(name = "job_position_id")
+    private JobPosition jobPosition;
 
-    @Column(name = "CreateDate")
-    private Date createDate;
+    @ManyToOne
+    @JoinColumn(name = "individual_id")
+    private Individual individual;
 
-    @Column(name = "Active")
+    @Column(name = "create_date")
+    private LocalDateTime createDate;
+
+    @Column(name = "active")
     private boolean active;
-
-    public IndividualJobPosition(int id, int individualId, Date createDate, boolean active) {
-        super();
-        this.id = id;
-        this.individualId = individualId;
-        this.createDate = createDate;
-        this.active = active;
-    }
-
-    public IndividualJobPosition() {}
 }

@@ -1,38 +1,34 @@
 package hrms.entities.concretes;
 
+import hrms.core.entities.User;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Entity
-@Table(name = "PhoneNumbers")
+@Table(name = "phone_numbers")
 public class PhoneNumber {
     @Id
-    @GeneratedValue
-    @Column(name = "Id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
 
-    @Column(name = "UserId")
-    private int userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @Column(name = "PhoneNumber")
+    @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Column(name = "CreateDate")
-    private Date createDate;
+    @Column(name = "create_date")
+    private LocalDateTime createDate;
 
-    @Column(name = "Active")
+    @Column(name = "active")
     private boolean active;
-
-    public PhoneNumber(int id, int userId, String phoneNumber, Date createDate, boolean active) {
-        this.id = id;
-        this.userId = userId;
-        this.phoneNumber = phoneNumber;
-        this.createDate = createDate;
-        this.active = active;
-    }
-
-    public PhoneNumber(){}
 }

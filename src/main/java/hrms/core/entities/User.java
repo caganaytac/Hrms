@@ -1,10 +1,22 @@
-package hrms.entities.concretes;
+package hrms.core.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import hrms.entities.concretes.Corporate;
+import hrms.entities.concretes.GithubAccount;
+import hrms.entities.concretes.Individual;
+import hrms.entities.concretes.LinkedinAccount;
+import hrms.entities.concretes.PhoneNumber;
+import hrms.entities.concretes.UserBiography;
+import hrms.entities.concretes.UserPhoto;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -12,23 +24,27 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "Users")
+@Table(name = "users")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "individuals", "corporates", "githubAccounts",
+        "linkedinAccounts", "phoneNumbers", "userBiographies", "userPhotos" })
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Id")
+    @Column(name = "id")
     private int id;
 
-    @Column(name = "Email")
+    @NotEmpty
+    @Column(name = "email")
     private String email;
 
-    @Column(name = "Password")
+    @NotEmpty
+    @Column(name = "password")
     private String password;
 
-    @Column(name = "CreateDate")
+    @Column(name = "create_date")
     private LocalDateTime createDate;
 
-    @Column(name = "Active")
+    @Column(name = "active")
     private boolean active;
 
     @OneToMany(mappedBy = "user")
@@ -38,5 +54,17 @@ public class User {
     private List<Corporate> corporates;
 
     @OneToMany(mappedBy = "user")
+    private List<GithubAccount> githubAccounts;
+
+    @OneToMany(mappedBy = "user")
+    private List<LinkedinAccount> linkedinAccounts;
+
+    @OneToMany(mappedBy = "user")
     private List<PhoneNumber> phoneNumbers;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserBiography> userBiographies;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserPhoto> userPhotos;
 }
