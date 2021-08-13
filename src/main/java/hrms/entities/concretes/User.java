@@ -1,4 +1,4 @@
-package hrms.core.entities;
+package hrms.entities.concretes;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,13 +9,11 @@ import javax.validation.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import hrms.entities.concretes.Corporate;
-import hrms.entities.concretes.GithubAccount;
-import hrms.entities.concretes.Individual;
-import hrms.entities.concretes.LinkedinAccount;
-import hrms.entities.concretes.PhoneNumber;
-import hrms.entities.concretes.UserBiography;
-import hrms.entities.concretes.UserPhoto;
+import org.hibernate.validator.constraints.Length;
+
+import hrms.core.utilities.validation.email.Email;
+import hrms.core.utilities.validation.password.Password;
+import hrms.entities.constants.Messages;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,18 +29,24 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Integer id;
 
-    @NotEmpty
+    @NotEmpty(message = Messages.emailNotEmpty)
+    @Email
     @Column(name = "email")
     private String email;
 
-    @NotEmpty
+    @NotEmpty(message = Messages.passwordNotEmpty)
+    @Length(min = 8, message = Messages.passwordLength)
+    @Password
     @Column(name = "password")
     private String password;
 
     @Column(name = "create_date")
     private LocalDateTime createDate;
+
+    @Column(name = "confirmed")
+    private boolean confirmed;
 
     @Column(name = "active")
     private boolean active;

@@ -1,21 +1,12 @@
 package hrms.business.abstracts;
 
+import hrms.core.business.baseService.BaseService;
 import hrms.core.utilities.results.DataResult;
 import hrms.core.utilities.results.Result;
-import hrms.core.entities.User;
+import hrms.entities.concretes.User;
 
-import java.util.List;
-
-public interface UserService {
-    DataResult<List<User>> getAll();
-
+public interface UserService extends BaseService<User, Integer> {
     DataResult<User> getByEmail(String email);
 
-    DataResult<User> getById(int id);
-
-    Result add(User user);
-
-    Result update(User user);
-
-    Result delete(User user);
+    Result confirm(Integer id);
 }

@@ -18,7 +18,7 @@ public class IndividualLanguage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     @NotEmpty
     @ManyToOne

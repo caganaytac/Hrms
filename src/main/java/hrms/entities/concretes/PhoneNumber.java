@@ -1,11 +1,14 @@
 package hrms.entities.concretes;
 
-import hrms.core.entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+
+import hrms.core.utilities.validation.callNumber.CallNumber;
+
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
@@ -17,12 +20,14 @@ public class PhoneNumber {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
+    @NotBlank
+    @CallNumber
     @Column(name = "phone_number")
     private String phoneNumber;
 

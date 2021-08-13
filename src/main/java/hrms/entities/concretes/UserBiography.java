@@ -9,8 +9,6 @@ import javax.validation.constraints.NotEmpty;
 
 import org.hibernate.validator.constraints.Length;
 
-import hrms.core.entities.User;
-
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
@@ -22,7 +20,7 @@ public class UserBiography {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     @NotEmpty
     @ManyToOne

@@ -7,21 +7,25 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
 @Table(name = "job_adverts")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "verifiedJobAdverts" })
 public class JobAdvert{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     @NotEmpty
     @ManyToOne
@@ -37,7 +41,17 @@ public class JobAdvert{
     @ManyToOne
     @JoinColumn(name = "city_id")
     private City city;
-      
+        
+    @NotEmpty
+    @ManyToOne
+    @JoinColumn(name = "work_area_id")
+    private WorkArea workArea;
+        
+    @NotEmpty
+    @ManyToOne
+    @JoinColumn(name = "work_time_id")
+    private WorkTime workTime;
+
     @Column(name = "min_salary")
     private Double minSalary;
              
@@ -47,7 +61,7 @@ public class JobAdvert{
     @Length(min = 1)
     @NotEmpty
     @Column(name = "open_position")
-    private short openPosition;
+    private Short openPosition;
     
     @NotEmpty
     @Column(name = "deadline")
@@ -64,5 +78,8 @@ public class JobAdvert{
     private LocalDateTime createDate;
 
     @Column(name = "active")
-    private boolean active;        
+    private boolean active;
+
+    @OneToMany(mappedBy = "jobAdvert")
+    private List<ConfirmedJobAdvert> verifiedJobAdverts;
 }

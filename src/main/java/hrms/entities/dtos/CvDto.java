@@ -2,6 +2,10 @@ package hrms.entities.dtos;
 
 import java.util.List;
 
+import javax.validation.constraints.NotEmpty;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import hrms.entities.concretes.GithubAccount;
 import hrms.entities.concretes.Individual;
 import hrms.entities.concretes.IndividualEducation;
@@ -19,21 +23,39 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CvDto {
+    @NotEmpty
+    @JsonIgnoreProperties({"createDate", "active"})
     private Individual individual;
 
+    @NotEmpty
+    @JsonIgnoreProperties({"id", "user", "createDate", "active"})
     private UserPhoto userPhoto;
-
+    
+    @NotEmpty
+    @JsonIgnoreProperties({"id", "user", "createDate", "active"})
     private UserBiography userBiography;
     
+    @NotEmpty
+    @JsonIgnoreProperties({"id", "user", "createDate", "active"})
     private LinkedinAccount linkedinAccount;
-
+    
+    @NotEmpty
+    @JsonIgnoreProperties({"id", "user", "createDate", "active"})
     private GithubAccount githubAccount;
-
-    private List<IndividualEducation> individualEducations;
-
-    private List<IndividualJobExperience> individualJobExperiences;
-
+    
+    @NotEmpty
+    @JsonIgnoreProperties({"id", "individual", "createDate", "active"})
     private List<IndividualTechnology> individualTechnologies;
-
+    
+    @NotEmpty
+    @JsonIgnoreProperties({"id", "individual", "status.id", "createDate", "active"})
+    private List<IndividualEducation> individualEducations;
+    
+    @NotEmpty
+    @JsonIgnoreProperties({"id", "individual", "createDate", "active"})
+    private List<IndividualJobExperience> individualJobExperiences;
+    
+    @NotEmpty
+    @JsonIgnoreProperties({"id", "individual", "createDate", "active"})
     private List<IndividualLanguage> individualLanguages;
 }

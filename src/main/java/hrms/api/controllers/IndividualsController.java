@@ -1,8 +1,8 @@
 package hrms.api.controllers;
 
 import hrms.business.abstracts.IndividualService;
+import hrms.core.api.BaseController;
 import hrms.core.utilities.results.DataResult;
-import hrms.core.utilities.results.Result;
 import hrms.entities.concretes.Individual;
 import hrms.entities.dtos.CvDto;
 
@@ -15,53 +15,28 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/individuals")
-public class IndividualsController {
-    private IndividualService individualService;
+public class IndividualsController extends BaseController<IndividualService, Individual, Integer> {
+    private final IndividualService individualService;
 
     @Autowired
     public IndividualsController(IndividualService individualService) {
+        super(individualService);
         this.individualService = individualService;
     }
 
-    @GetMapping("/getAll")
-    public ResponseEntity<DataResult<List<Individual>>> getAll() {
-        var result = this.individualService.getAll();
-        if (result.isSuccess()) return new ResponseEntity<DataResult<List<Individual>>>(result, HttpStatus.OK);
-        return new ResponseEntity<DataResult<List<Individual>>>(result, HttpStatus.BAD_REQUEST);
-    }
-
-    @GetMapping("/getById")
-    public ResponseEntity<DataResult<Individual>> getById(@RequestParam int id) {
-        var result = this.individualService.getById(id);
-        if (result.isSuccess()) return new ResponseEntity<DataResult<Individual>>(result, HttpStatus.OK);
+    @GetMapping("/getByUser")
+    public ResponseEntity<DataResult<Individual>> getByUser(Integer id) {
+        DataResult<Individual> result = this.individualService.getByUser(id);
+        if (result.isSuccess())
+            return new ResponseEntity<DataResult<Individual>>(result, HttpStatus.OK);
         return new ResponseEntity<DataResult<Individual>>(result, HttpStatus.BAD_REQUEST);
     }
 
-    // @GetMapping("/getCv")
-    // public ResponseEntity<DataResult<CvDto>> getCv(@RequestParam int id) {
-    //     var result = this.individualService.getCv(id);
-    //     if (result.isSuccess()) return new ResponseEntity<DataResult<CvDto>>(result, HttpStatus.OK);
-    //     return new ResponseEntity<DataResult<CvDto>>(result, HttpStatus.BAD_REQUEST);
-    // }
-
-    @PostMapping("/add")
-    public ResponseEntity<Result> add(@RequestBody Individual individual) {
-        var result = this.individualService.add(individual);
-        if (result.isSuccess()) return new ResponseEntity<Result>(result, HttpStatus.OK);
-        return new ResponseEntity<Result>(result, HttpStatus.BAD_REQUEST);
-    }
-
-    @PostMapping("/update")
-    public ResponseEntity<Result> update(@RequestBody Individual individual) {
-        var result = this.individualService.update(individual);
-        if (result.isSuccess()) return new ResponseEntity<Result>(result, HttpStatus.OK);
-        return new ResponseEntity<Result>(result, HttpStatus.BAD_REQUEST);
-    }
-
-    @PostMapping("/delete")
-    public ResponseEntity<Result> delete(@RequestBody Individual individual) {
-        var result = this.individualService.delete(individual);
-        if (result.isSuccess()) return new ResponseEntity<Result>(result, HttpStatus.OK);
-        return new ResponseEntity<Result>(result, HttpStatus.BAD_REQUEST);
+    @GetMapping("/getCv")
+    public ResponseEntity<DataResult<List<CvDto>>> getCv(@RequestParam Integer id) {
+        DataResult<List<CvDto>> result = this.individualService.getCv(id);
+        if (result.isSuccess())
+            return new ResponseEntity<DataResult<List<CvDto>>>(result, HttpStatus.OK);
+        return new ResponseEntity<DataResult<List<CvDto>>>(result, HttpStatus.BAD_REQUEST);
     }
 }

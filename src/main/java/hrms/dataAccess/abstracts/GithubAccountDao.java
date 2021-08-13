@@ -1,12 +1,15 @@
 package hrms.dataAccess.abstracts;
 
+import hrms.core.dataAccess.BaseDao;
 import hrms.entities.concretes.GithubAccount;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
+public interface GithubAccountDao extends BaseDao<GithubAccount, Integer>, JpaRepository<GithubAccount, Integer> {
+    @Query("From GithubAccount where user.id=:id and active=true")
+    GithubAccount getByUser(Integer id);
 
-public interface GithubAccountDao extends JpaRepository<GithubAccount, Integer> {
-    List<GithubAccount> getByActive(boolean active);
-
-    GithubAccount getByIdAndActive(int id, boolean active);
+    @Query("From GithubAccount where user.id = :userId and accountAddress = :accountAddress and active=true")
+    GithubAccount doesExist(Integer userId, String accountAddress);
 }

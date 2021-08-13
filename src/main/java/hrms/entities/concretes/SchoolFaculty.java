@@ -16,12 +16,12 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "school_faculties")
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler","individualEducations"})
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "individualEducations" })
 public class SchoolFaculty {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "faculty_id")
@@ -36,7 +36,7 @@ public class SchoolFaculty {
 
     @Column(name = "active")
     private boolean active;
-    
+
     @OneToMany(mappedBy = "schoolFaculty")
     private List<IndividualEducation> individualEducations;
 }

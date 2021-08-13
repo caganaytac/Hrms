@@ -1,11 +1,15 @@
 package hrms.dataAccess.abstracts;
 
+import hrms.core.dataAccess.BaseDao;
 import hrms.entities.concretes.PhoneNumber;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
+public interface PhoneNumberDao extends BaseDao<PhoneNumber, Integer>, JpaRepository<PhoneNumber, Integer> {
+    @Query("From PhoneNumber where user.id = :userId and phoneNumber = :phoneNumber and active = true")
+    PhoneNumber doesExist(Integer userId, String phoneNumber);
 
-public interface PhoneNumberDao extends JpaRepository<PhoneNumber, Integer> {
-    List<PhoneNumber> getByActive(boolean active);
-    PhoneNumber getByIdAndActive(int id, boolean active);
+    @Query("From PhoneNumber where user.id = :id and active = true")
+    PhoneNumber getByUser(Integer id);
 }

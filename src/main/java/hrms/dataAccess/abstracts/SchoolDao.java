@@ -1,11 +1,12 @@
 package hrms.dataAccess.abstracts;
 
+import hrms.core.dataAccess.BaseDao;
 import hrms.entities.concretes.School;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
-
-public interface SchoolDao extends JpaRepository<School, Integer> {
-    List<School> getByActive(boolean active);
-    School getByIdAndActive(int id, boolean active);
+public interface SchoolDao extends BaseDao<School, Integer>, JpaRepository<School, Integer> {
+    @Query("From School where name = :name and active = true")
+    School getByName(String name);
 }

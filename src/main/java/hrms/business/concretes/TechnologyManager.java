@@ -7,7 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import hrms.business.abstracts.TechnologyService;
+import hrms.business.constans.Messages;
+import hrms.core.utilities.business.BusinessRules;
 import hrms.core.utilities.results.DataResult;
+import hrms.core.utilities.results.ErrorResult;
 import hrms.core.utilities.results.Result;
 import hrms.core.utilities.results.SuccessDataResult;
 import hrms.core.utilities.results.SuccessResult;
@@ -17,6 +20,7 @@ import hrms.entities.concretes.Technology;
 @Service
 public class TechnologyManager implements TechnologyService {
     private TechnologyDao technologyDao;
+    private final String TECHNOLOGY = "Technology";
 
     @Autowired
     public TechnologyManager(TechnologyDao technologyDao) {
@@ -35,20 +39,56 @@ public class TechnologyManager implements TechnologyService {
 
     @Override
     public Result add(Technology technology) {
+        technology.setName(technology.getName().trim());
+        Result result = BusinessRules.run(doesExist(technology));
+        if (result != null)
+            return result;
+
         technology.setCreateDate(LocalDateTime.now());
         technology.setActive(true);
 
         this.technologyDao.save(technology);
-        return new SuccessResult();
+        return new SuccessResult(Messages.added(TECHNOLOGY));
     }
 
     @Override
     public Result update(Technology technology) {
-        return null;
+        technology.setName(technology.getName().trim());
+        Result result = BusinessRules.run(doesExistById(technology.getId()), doesExist(technology));
+        if (result != null)
+            return result;
+
+        Technology newTechnology = this.technologyDao.getByIdAndActive(technology.getId(), true);
+        newTechnology.setName(technology.getName());
+
+        this.technologyDao.save(newTechnology);
+        return new SuccessResult(Messages.updated(TECHNOLOGY));
     }
 
     @Override
-    public Result delete(Technology technology) {
-        return null;
+    public Result delete(Short id) {
+        Result result = BusinessRules.run(doesExistById(id));
+        if (result != null)
+            return result;
+
+        Technology oldTechnology = this.technologyDao.getByIdAndActive(id, true);
+        oldTechnology.setActive(false);
+
+        this.technologyDao.save(oldTechnology);
+        return new SuccessResult(Messages.deleted(TECHNOLOGY));
+    }
+
+    private Result doesExist(Technology technology) {
+        Technology result = this.technologyDao.getByName(technology.getName());
+        if (result != null)
+            return new ErrorResult(Messages.alreadyExists(TECHNOLOGY));
+        return new SuccessResult();
+    }
+
+    private Result doesExistById(Short id) {
+        Technology result = this.technologyDao.getByIdAndActive(id, true);
+        if (result == null)
+            return new ErrorResult(Messages.notFound(TECHNOLOGY));
+        return new SuccessResult();
     }
 }

@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
-import hrms.core.entities.User;
-
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
@@ -20,15 +18,18 @@ public class UserPhoto{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     @NotEmpty
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "photo")
-    private String photo;
+    @Column(name = "public_id")
+    private String publicId;
+    
+    @Column(name = "url")
+    private String url;
 
     @Column(name = "create_date")
     private LocalDateTime createDate;

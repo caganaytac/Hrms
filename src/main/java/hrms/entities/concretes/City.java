@@ -24,7 +24,7 @@ public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private short id;
+    private Short id;
 
     @NotEmpty(message = Messages.cityNameNotEmpty)
     @Column(name = "name")
@@ -35,7 +35,7 @@ public class City {
 
     @Column(name = "active")
     private boolean active;
-
+    
     @OneToMany(mappedBy = "city")
     private List<JobAdvert> jobAdverts;
 }

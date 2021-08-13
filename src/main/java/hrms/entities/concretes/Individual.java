@@ -1,7 +1,5 @@
 package hrms.entities.concretes;
 
-import hrms.core.entities.User;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,21 +11,21 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
 @Table(name = "individuals")
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "individualJobPositions", "individualEducations",
-        "individualJobExperiences", "individualLanguages", "individualTechnologies" })
+        "individualJobExperiences", "individualLanguages", "individualTechnologies", "employees" })
 public class Individual {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties({"password", "createDate" })
     private User user;
 
     @Column(name = "first_name")
@@ -49,6 +47,9 @@ public class Individual {
     private boolean active;
 
     @OneToMany(mappedBy = "individual")
+    private List<Employee> employees;
+
+    @OneToMany(mappedBy = "individual")
     private List<IndividualJobPosition> individualJobPositions;
 
     @OneToMany(mappedBy = "individual")
@@ -62,4 +63,12 @@ public class Individual {
     
     @OneToMany(mappedBy = "individual")
     private List<IndividualTechnology> individualTechnologies;
+
+    public Individual(User user, String firstName, String lastName, String nationalIdentity, LocalDate dateOfBirth) {
+        this.user = user;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.nationalIdentity = nationalIdentity;
+        this.dateOfBirth = dateOfBirth;
+    }
 }

@@ -1,11 +1,12 @@
 package hrms.dataAccess.abstracts;
 
+import hrms.core.dataAccess.BaseDao;
 import hrms.entities.concretes.Status;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
-
-public interface StatusDao extends JpaRepository<Status, Short> {
-    List<Status> getByActive(boolean active);
-    Status getByIdAndActive(short id, boolean active);
+public interface StatusDao extends BaseDao<Status, Short>, JpaRepository<Status, Short> {
+    @Query("From Status where name = :name and active = true")
+    Status getByName(String name);
 }

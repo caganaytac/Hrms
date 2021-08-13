@@ -18,9 +18,8 @@ public class IndividualEducation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
-    @NotEmpty
     @ManyToOne
     @JoinColumn(name = "individual_id")
     private Individual individual;
@@ -36,7 +35,7 @@ public class IndividualEducation {
     private Status status;
 
     @Column(name = "graduate_year")
-    private short graduateYear;
+    private Short graduateYear;
 
     @Column(name = "create_date")
     private LocalDateTime createDate;

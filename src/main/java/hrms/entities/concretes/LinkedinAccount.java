@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
-import hrms.core.entities.User;
-
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
@@ -20,7 +18,7 @@ public class LinkedinAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Integer id;
 
     @NotEmpty
     @ManyToOne

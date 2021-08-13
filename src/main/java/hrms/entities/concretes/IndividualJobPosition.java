@@ -16,7 +16,7 @@ public class IndividualJobPosition {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "job_position_id")

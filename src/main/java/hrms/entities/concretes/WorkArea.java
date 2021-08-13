@@ -17,12 +17,12 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "work_areas")
-// @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "jobAdverts" })
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "jobAdverts" })
 public class WorkArea {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private short id;
+    private Short id;
 
     @NotEmpty
     @Column(name = "name")
@@ -34,6 +34,6 @@ public class WorkArea {
     @Column(name = "active")
     private boolean active;
 
-    // @OneToMany(mappedBy = "workArea")
-    // private List<JobAdvert> jobAdverts;
+    @OneToMany(mappedBy = "workArea")
+    private List<JobAdvert> jobAdverts;
 }

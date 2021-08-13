@@ -1,30 +1,30 @@
 package hrms.dataAccess.abstracts;
 
+import hrms.core.dataAccess.BaseDao;
 import hrms.entities.concretes.Individual;
-import hrms.entities.dtos.CvDto;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
+import java.time.LocalDate;
 
-public interface IndividualDao extends JpaRepository<Individual, Integer> {
-    List<Individual> getByActive(boolean active);
+public interface IndividualDao extends BaseDao<Individual, Integer>, JpaRepository<Individual, Integer> {
+        Individual getByNationalIdentity(String nationalIdentity);
 
-    Individual getByIdAndActive(int id, boolean active);
+        @Query("From Individual where user.id = :id and active = true")
+        Individual getByUser(Integer id);
 
-    // @Query("Select new hrms.entities.dtos.CvDto(i,up,ub,l,g,ie,ije,it,il)"
-    //         + "From Individual i Inner Join i.individualEducations ie From Individual Left Join i.user.userPhotos up"
-    //         + "Left Join i.user.userBiographies ub Left Join i.user.linkedinAccounts l"
-    //         + "Left Join i.user.githubAccounts g Left Join i.individualJobExperiences ije Left Join i.individualTechnologies it"
-    //         + "Left Join i.individualLanguages il where i.id=:id and i.active=true")
-    // CvDto getCv(Integer id);
+        @Query("From Individual where user.id = :userId and firstName = :firstName and lastName = :lastName and"
+                        + " nationalIdentity = :nationalIdentity and dateOfBirth = :dateOfBirth and active = true")
+        Individual doesExist(Integer userId, String firstName, String lastName, String nationalIdentity,
+                        LocalDate dateOfBirth);
 
-
-    // @Query("Select new kodlamaio.northwind.entities.dtos.ProductWithCategoryDto"
-    //         + "(p.id, p.productName, c.categoryName) " + "From Category c Inner Join c.products p")
-    // List<ProductWithCategoryDto> getProductWithCategoryDetails();
-
-    // "(individual,userPhoto,userBiography,linkedinAccount,githubAccount,individualEducations
-    // ,individualJobExperiences,individualTechnologies,individualLanguages)"
+        // @Query("Select new hrms.entities.dtos.CvDto(i.id,up.photo,ub.biography,"
+        // + "l.accountAddress,g.accountAddress,it.technology.name,il.language.name)"
+        // + " From User u Inner Join u.individuals i Inner Join u.userPhotos up"
+        // + " Inner Join u.userBiographies ub Inner Join u.linkedinAccounts l"
+        // + " Inner Join u.githubAccounts g Inner Join
+        // u.individuals.individualTechnologies it"
+        // + " Inner Join u.individuals.individualLanguages il where i.id= :id")
+        // List<CvDto> getCv(Integer id);
 }

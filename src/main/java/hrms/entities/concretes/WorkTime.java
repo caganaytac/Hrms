@@ -19,7 +19,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "work_times")
-// @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "jobAdverts" })
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "jobAdverts" })
 public class WorkTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +36,6 @@ public class WorkTime {
     @Column(name = "active")
     private boolean active;
 
-    // @OneToMany(mappedBy = "workTime")
-    // private List<JobAdvert> jobAdverts;
+    @OneToMany(mappedBy = "workTime")
+    private List<JobAdvert> jobAdverts;
 }

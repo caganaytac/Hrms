@@ -1,9 +1,12 @@
 package hrms.business.concretes;
 
 import hrms.business.abstracts.UserService;
+import hrms.business.constans.Messages;
+import hrms.core.utilities.business.BusinessRules;
 import hrms.core.utilities.results.*;
-import hrms.core.dataAccess.UserDao;
-import hrms.core.entities.User;
+import hrms.dataAccess.abstracts.UserDao;
+import hrms.entities.concretes.User;
+import lombok.var;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,9 +14,12 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.validation.Valid;
+
 @Service
 public class UserManager implements UserService {
     private UserDao userDao;
+    private final String USER = "User";
 
     @Autowired
     public UserManager(UserDao userDao) {
@@ -22,7 +28,12 @@ public class UserManager implements UserService {
 
     @Override
     public DataResult<List<User>> getAll() {
-        return new SuccessDataResult<List<User>>(this.userDao.getByActive(true));
+        return new SuccessDataResult<List<User>>(this.userDao.getByConfirmedAndActive(true, true));
+    }
+
+    @Override
+    public DataResult<User> getById(Integer id) {
+        return new SuccessDataResult<User>(this.userDao.getByIdAndActiveAndConfirmed(id, true, true));
     }
 
     @Override
@@ -31,46 +42,79 @@ public class UserManager implements UserService {
     }
 
     @Override
-    public DataResult<User> getById(int id) {
-        return new SuccessDataResult<User>(this.userDao.getByIdAndActive(id, true));
-    }
+    public Result confirm(Integer id) {
+        var user = this.userDao.getByIdAndActive(id, true);
+        if (user == null)
+            return new ErrorResult(Messages.notFound(USER));
+        if (user.isConfirmed())
+            return new ErrorResult(Messages.userAlreadyConfirmed);
 
-    @Override
-    public Result add(User user) {
-        var result = getByEmail(user.getEmail().toLowerCase()).getData();
-        if (result != null) return new ErrorResult("User already exist.");
-
-        user.setEmail(user.getEmail().toLowerCase());
-        user.setCreateDate(LocalDateTime.now());
-        user.setActive(true);
-
+        user.setConfirmed(true);
         this.userDao.save(user);
-        return new SuccessResult("User added.");
+        return new SuccessResult(Messages.userConfirmed);
     }
 
     @Override
-    public Result update(User user) {
-        var oldUser = getById(user.getId()).getData();
-        var newUser = getById(user.getId()).getData();
+    public Result add(@Valid User user) {
+        user.setEmail(user.getEmail().replaceAll("\\s", "").toLowerCase());
+        var result = BusinessRules.run(doesExist(user));
+        if (result != null)
+            return result;
 
-        newUser.setEmail(user.getEmail().toLowerCase());
-        newUser.setCreateDate(LocalDateTime.now());
+        user.setEmail(user.getEmail());
+        user.setCreateDate(LocalDateTime.now());
+        user.setConfirmed(false);
+        user.setActive(true);
+        
+        this.userDao.save(user);
+        return new SuccessResult();
+    }
+
+    @Override
+    public Result update(@Valid User user) {
+        user.setEmail(user.getEmail().replaceAll("\\s", "").toLowerCase());
+        var result = BusinessRules.run(doesExistById(user.getId()), isConfirmed(user.getId()), doesExist(user));
+        if (result != null)
+            return result;
+
+        var newUser = this.userDao.getByIdAndActive(user.getId(), true);
+        newUser.setEmail(user.getEmail());
+
         this.userDao.save(newUser);
-
-        oldUser.setId(0);
-        oldUser.setActive(false);
-        this.userDao.save(oldUser);
-
-        return new SuccessResult("User updated.");
+        return new SuccessResult(Messages.updated(USER));
     }
 
     @Override
-    public Result delete(User user) {
-        var oldUser = getById(user.getId()).getData();
+    public Result delete(Integer id) {
+        var result = BusinessRules.run(doesExistById(id));
+        if (result != null)
+            return result;
 
+        var oldUser = this.userDao.getByIdAndActive(id, true);
         oldUser.setActive(false);
-        this.userDao.save(oldUser);
 
-        return new SuccessResult("User deleted.");
+        this.userDao.save(oldUser);
+        return new SuccessResult(Messages.deleted(USER));
+    }
+
+    private Result doesExist(User user) {
+        var result = getByEmail(user.getEmail()).getData();
+        if (result != null)
+            return new ErrorResult(Messages.alreadyExists(USER));
+        return new SuccessResult();
+    }
+
+    private Result doesExistById(Integer id) {
+        var result = this.userDao.getByIdAndActive(id, true);
+        if (result == null)
+            return new ErrorResult(Messages.notFound(USER));
+        return new SuccessResult();
+    }
+
+    private Result isConfirmed(Integer id) {
+        var result = this.userDao.getByIdAndActiveAndConfirmed(id, false, true);
+        if (result == null)
+            return new ErrorResult(Messages.userNotConfirmed);
+        return new SuccessResult();
     }
 }

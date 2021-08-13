@@ -1,19 +1,7 @@
 package hrms.business.abstracts;
 
-import hrms.core.utilities.results.DataResult;
-import hrms.core.utilities.results.Result;
+import hrms.core.business.baseService.BaseService;
 import hrms.entities.concretes.City;
 
-import java.util.List;
-
-public interface CityService {
-    DataResult<List<City>> getAll();
-
-    DataResult<City> getById(short id);
-
-    Result add(City city);
-
-    Result update(City city);
-
-    Result delete(City city);
+public interface CityService extends BaseService<City, Short> {
 }

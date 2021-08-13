@@ -1,21 +1,17 @@
 package hrms.business.abstracts;
 
+import hrms.core.business.baseService.BaseService;
 import hrms.core.utilities.results.DataResult;
-import hrms.core.utilities.results.Result;
 import hrms.entities.concretes.JobAdvert;
-
+import hrms.entities.dtos.JobAdvertDto;
 import java.util.List;
 
-public interface JobAdvertService {
-    DataResult<List<JobAdvert>> getAll();
+public interface JobAdvertService extends BaseService<JobAdvert, Long> {
+    DataResult<List<JobAdvertDto>> getDetails();
 
-    DataResult<JobAdvert> getById(Long id);
+    DataResult<JobAdvertDto> getDetailById(Long id);
 
-    DataResult<List<JobAdvert>> getAllByCorporate(Integer id);
+    DataResult<List<JobAdvert>> getByCorporate(Integer id);
 
-    Result add(JobAdvert jobAdvert);
-
-    Result update(JobAdvert jobAdvert);
-
-    Result delete(JobAdvert jobAdvert);
+    DataResult<List<JobAdvertDto>> getDetailsByCorporate(Integer id);
 }
