@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,35 +23,37 @@ import hrms.entities.dtos.UserLoginDto;
 @RequestMapping("/api/auth")
 public class AuthController {
     private final AuthService authService;
+
     @Autowired
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
 
     @PostMapping("/registerForIndividual")
-    public ResponseEntity<Result> registerForIndividual(@RequestBody @Valid IndividualRegisterDto individualRegisterDto) {
+    public ResponseEntity<Result> registerForIndividual(
+            @ModelAttribute @Valid IndividualRegisterDto individualRegisterDto) {
         Result result = this.authService.registerForIndividual(individualRegisterDto);
         if (result.isSuccess())
             return new ResponseEntity<Result>(result, HttpStatus.OK);
         return new ResponseEntity<Result>(result, HttpStatus.BAD_REQUEST);
     }
-    
+
     @PostMapping("/registerForCorporate")
-    public ResponseEntity<Result> registerForCorporate(@RequestBody @Valid CorporateRegisterDto corporateRegisterDto) {
+    public ResponseEntity<Result> registerForCorporate(@ModelAttribute @Valid CorporateRegisterDto corporateRegisterDto) {
         Result result = this.authService.registerForCorporate(corporateRegisterDto);
         if (result.isSuccess())
             return new ResponseEntity<Result>(result, HttpStatus.OK);
         return new ResponseEntity<Result>(result, HttpStatus.BAD_REQUEST);
     }
-    
+
     @PostMapping("/registerForEmployee")
-    public ResponseEntity<Result> registerForEmployee(@RequestBody @Valid EmployeeRegisterDto employeeRegisterDto) {
+    public ResponseEntity<Result> registerForEmployee(@ModelAttribute @Valid EmployeeRegisterDto employeeRegisterDto) {
         Result result = this.authService.registerForEmployee(employeeRegisterDto);
         if (result.isSuccess())
             return new ResponseEntity<Result>(result, HttpStatus.OK);
         return new ResponseEntity<Result>(result, HttpStatus.BAD_REQUEST);
     }
-    
+
     @PostMapping("/login")
     public ResponseEntity<Result> login(@RequestBody @Valid UserLoginDto userLoginDto) {
         Result result = this.authService.login(userLoginDto);
@@ -58,7 +61,7 @@ public class AuthController {
             return new ResponseEntity<Result>(result, HttpStatus.OK);
         return new ResponseEntity<Result>(result, HttpStatus.BAD_REQUEST);
     }
-     
+
     @PostMapping("/changePassword")
     public ResponseEntity<Result> changePassword(@RequestBody @Valid UserChangePasswordDto userChangePasswordDto) {
         Result result = this.authService.changePassword(userChangePasswordDto);

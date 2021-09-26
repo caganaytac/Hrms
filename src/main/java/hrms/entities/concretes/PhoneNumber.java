@@ -36,4 +36,9 @@ public class PhoneNumber {
 
     @Column(name = "active")
     private boolean active;
+
+    public PhoneNumber(User user, String phoneNumber) {
+        this.user = user;
+        this.phoneNumber = phoneNumber;
+    }
 }

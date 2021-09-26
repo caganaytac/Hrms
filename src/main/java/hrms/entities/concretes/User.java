@@ -23,7 +23,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "users")
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "individuals", "corporates", "githubAccounts",
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "individual", "corporates", "githubAccounts",
         "linkedinAccounts", "phoneNumbers", "userBiographies", "userPhotos" })
 public class User {
     @Id
@@ -51,8 +51,8 @@ public class User {
     @Column(name = "active")
     private boolean active;
 
-    @OneToMany(mappedBy = "user")
-    private List<Individual> individuals;
+    @OneToOne(mappedBy = "user")
+    private Individual individual;
 
     @OneToMany(mappedBy = "user")
     private List<Corporate> corporates;

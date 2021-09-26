@@ -1,11 +1,19 @@
 package hrms.business.concretes;
 
 import hrms.business.abstracts.UserService;
+import hrms.business.abstracts.IndividualService;
+import hrms.business.abstracts.CorporateService;
+import hrms.business.abstracts.UserPhotoService;
+import hrms.business.abstracts.PhoneNumberService;
 import hrms.business.constans.Messages;
 import hrms.core.utilities.business.BusinessRules;
 import hrms.core.utilities.results.*;
 import hrms.dataAccess.abstracts.UserDao;
 import hrms.entities.concretes.User;
+import hrms.entities.concretes.Individual;
+import hrms.entities.concretes.Corporate;
+import hrms.entities.concretes.PhoneNumber;
+import hrms.entities.concretes.UserPhoto;
 import lombok.var;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +27,20 @@ import javax.validation.Valid;
 @Service
 public class UserManager implements UserService {
     private UserDao userDao;
+    private final IndividualService individualService;
+    private final CorporateService corporateService;
+    private final PhoneNumberService phoneNumberService;
+    private final UserPhotoService userPhotoService;
     private final String USER = "User";
 
     @Autowired
-    public UserManager(UserDao userDao) {
+    public UserManager(UserDao userDao, IndividualService individualService, CorporateService corporateService,
+            PhoneNumberService phoneNumberService, UserPhotoService userPhotoService) {
         this.userDao = userDao;
+        this.phoneNumberService = phoneNumberService;
+        this.individualService = individualService;
+        this.corporateService = corporateService;
+        this.userPhotoService = userPhotoService;
     }
 
     @Override
@@ -61,11 +78,10 @@ public class UserManager implements UserService {
         if (result != null)
             return result;
 
-        user.setEmail(user.getEmail());
         user.setCreateDate(LocalDateTime.now());
         user.setConfirmed(false);
         user.setActive(true);
-        
+
         this.userDao.save(user);
         return new SuccessResult();
     }
@@ -89,6 +105,26 @@ public class UserManager implements UserService {
         var result = BusinessRules.run(doesExistById(id));
         if (result != null)
             return result;
+
+        Individual individual = this.individualService.getByUser(id).getData();
+        if (individual != null) {
+            this.individualService.delete(individual.getId());
+        }
+
+        Corporate corporate = this.corporateService.getByUser(id).getData();
+        if (corporate != null) {
+            this.corporateService.delete(corporate.getId());
+        }
+
+        UserPhoto userPhoto = this.userPhotoService.getByUser(id).getData();
+        if (userPhoto != null) {
+            this.userPhotoService.delete(userPhoto);
+        }
+        
+        PhoneNumber phoneNumber = this.phoneNumberService.getByUser(id).getData();
+        if (phoneNumber != null) {
+            this.phoneNumberService.delete(phoneNumber.getId());
+        }
 
         var oldUser = this.userDao.getByIdAndActive(id, true);
         oldUser.setActive(false);

@@ -9,6 +9,7 @@ import hrms.core.utilities.validation.email.Email;
 import hrms.core.utilities.validation.password.Password;
 
 import org.hibernate.validator.constraints.Length;
+import org.springframework.web.multipart.MultipartFile;
 
 import hrms.entities.constants.Messages;
 import lombok.AllArgsConstructor;
@@ -42,4 +43,6 @@ public class IndividualRegisterDto {
 
     @NotNull(message = Messages.dateOfBirthNotEmpty)
     private LocalDate dateOfBirth;
+
+    private MultipartFile photo;
 }

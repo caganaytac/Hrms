@@ -23,7 +23,7 @@ public class Individual {
     @Column(name = "id")
     private Integer id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id")
     @JsonIgnoreProperties({"password", "createDate" })
     private User user;

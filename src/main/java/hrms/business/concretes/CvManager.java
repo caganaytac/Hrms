@@ -61,7 +61,6 @@ public class CvManager implements CvService {
 
     @Override
     public DataResult<CvDto> getByIndividual(Integer id) {
-        //without join
         var cvDto = new CvDto();
         var individual = this.individualService.getById(id).getData();
         cvDto.setIndividual(individual);
@@ -105,12 +104,7 @@ public class CvManager implements CvService {
 
     @Override
     public Result add(CvDto cvDto) {
-
         var individual = cvDto.getIndividual();
-
-        // var userPhoto = cvDto.getUserPhoto();
-        // userPhoto.setUser(individual.getUser());
-        // this.userPhotoService.add(userPhoto); 
 
         var biography = cvDto.getUserBiography();
         biography.setUser(individual.getUser());
@@ -153,8 +147,6 @@ public class CvManager implements CvService {
 
     @Override
     public Result delete(CvDto cvDto) {
-        
-        this.userPhotoService.delete(cvDto.getUserPhoto());
         this.userBiographyService.delete(cvDto.getUserBiography().getId());
         this.githubAccountService.delete(cvDto.getGithubAccount().getId());
         this.linkedinAccountService.delete(cvDto.getLinkedinAccount().getId());

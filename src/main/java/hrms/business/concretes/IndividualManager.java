@@ -2,6 +2,8 @@ package hrms.business.concretes;
 
 import hrms.business.abstracts.IndividualLanguageService;
 import hrms.business.abstracts.IndividualService;
+import hrms.business.abstracts.IndividualJobPositionService;
+import hrms.business.abstracts.EmployeeService;
 import hrms.business.constans.Messages;
 import hrms.core.business.adapters.personService.Person;
 import hrms.core.business.adapters.personService.PersonService;
@@ -14,6 +16,8 @@ import hrms.core.utilities.results.SuccessResult;
 import hrms.dataAccess.abstracts.IndividualDao;
 import hrms.entities.concretes.Individual;
 import hrms.entities.concretes.IndividualLanguage;
+import hrms.entities.concretes.IndividualJobPosition;
+import hrms.entities.concretes.Employee;
 import hrms.entities.dtos.CvDto;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +31,19 @@ import java.util.List;
 public class IndividualManager implements IndividualService {
     private IndividualDao individualDao;
     private IndividualLanguageService individualLanguageService;
+    private IndividualJobPositionService individualJobPositionService;
+    private EmployeeService employeeService;
     private PersonService personService;
     private final String INDIVIDUAL = "Individual";
 
     @Autowired
     public IndividualManager(IndividualDao individualDao, IndividualLanguageService individualLanguageService,
+            IndividualJobPositionService individualJobPositionService, EmployeeService employeeService,
             PersonService personService) {
         this.individualDao = individualDao;
         this.individualLanguageService = individualLanguageService;
+        this.individualJobPositionService = individualJobPositionService;
+        this.employeeService = employeeService;
         this.personService = personService;
     }
 
@@ -99,12 +108,22 @@ public class IndividualManager implements IndividualService {
         if (result != null)
             return result;
 
+        Employee employee = this.employeeService.getByIndividual(id).getData();
+        if(employee != null) {
+            this.employeeService.delete(employee.getId());
+        }
+
+        List<IndividualJobPosition> individualJobPositions = this.individualJobPositionService.getByIndividual(id).getData();
+        if (individualJobPositions.size() > 0) {
+            this.individualJobPositionService.deleteByIndividual(id);
+        }
+        
         List<IndividualLanguage> individualLanguages = this.individualLanguageService.getByIndividual(id).getData();
         if (individualLanguages.size() > 0)
             for (IndividualLanguage individualLanguage : individualLanguages) {
                 this.individualLanguageService.delete(individualLanguage.getId());
             }
-
+        
         Individual oldIndividual = this.individualDao.getByIdAndActive(id, true);
         oldIndividual.setActive(false);
 
@@ -114,7 +133,7 @@ public class IndividualManager implements IndividualService {
 
     private Result checkRealPerson(Individual individual) {
         Person person = new Person(Long.parseLong(individual.getNationalIdentity()), individual.getFirstName(),
-        individual.getLastName(), individual.getDateOfBirth().getYear());
+                individual.getLastName(), individual.getDateOfBirth().getYear());
         boolean result = this.personService.verify(person);
         if (!result)
             return new ErrorResult(Messages.notRealPerson);

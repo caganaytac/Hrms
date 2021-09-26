@@ -54,12 +54,6 @@ public class Corporate {
     @OneToMany(mappedBy = "corporate")
     private List<JobAdvert> jobAdverts;
 
-    // @OneToMany(mappedBy = "corporate")
-    // private List<ConfirmedCorporate> confirmedCorporates;
-
-    // @OneToMany(mappedBy = "corporate")
-    // private List<CorporateToConfirm> corporateToConfirms;
-
     public Corporate(User user, String companyName, String website) {
         this.user = user;
         this.companyName = companyName;

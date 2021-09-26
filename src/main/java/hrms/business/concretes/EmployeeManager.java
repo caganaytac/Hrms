@@ -6,9 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import hrms.business.abstracts.CorporateService;
 import hrms.business.abstracts.EmployeeService;
-import hrms.business.abstracts.IndividualService;
 import hrms.business.constans.Messages;
 import hrms.core.utilities.business.BusinessRules;
 import hrms.core.utilities.results.DataResult;
@@ -25,8 +23,7 @@ public class EmployeeManager implements EmployeeService {
     private final String EMPLOYEE = "Employee";
 
     @Autowired
-    public EmployeeManager(EmployeeDao employeeDao, CorporateService corporateService,
-            IndividualService individualService) {
+    public EmployeeManager(EmployeeDao employeeDao) {
         this.employeeDao = employeeDao;
     }
 

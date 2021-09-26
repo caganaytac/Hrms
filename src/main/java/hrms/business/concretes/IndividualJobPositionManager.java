@@ -88,6 +88,15 @@ public class IndividualJobPositionManager implements IndividualJobPositionServic
         return new SuccessResult();
     }
 
+    @Override
+    public Result deleteByIndividual(Integer id) {
+        List<IndividualJobPosition> individualJobPositions = getByIndividual(id).getData();
+        for(IndividualJobPosition individualJobPosition : individualJobPositions) {
+            delete(individualJobPosition.getId());
+        }
+        return new SuccessResult();
+    }
+
     private Result doesExist(IndividualJobPosition individualJobPosition) {
         IndividualJobPosition result = this.individualJobPositionDao.doesExist(
                 individualJobPosition.getJobPosition().getId(), individualJobPosition.getIndividual().getId());

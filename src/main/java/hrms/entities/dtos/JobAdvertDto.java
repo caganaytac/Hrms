@@ -2,8 +2,6 @@ package hrms.entities.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import org.springframework.lang.Nullable;
-
 import hrms.entities.concretes.JobAdvert;
 import hrms.entities.concretes.UserPhoto;
 import lombok.AllArgsConstructor;
@@ -18,7 +16,4 @@ public class JobAdvertDto {
 
     @JsonIgnoreProperties({"id", "user", "publicId", "createDate", "active"})
     private UserPhoto userPhoto;
-    
-    @Nullable
-    private boolean verified;
 }

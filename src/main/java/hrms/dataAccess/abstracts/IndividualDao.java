@@ -19,12 +19,18 @@ public interface IndividualDao extends BaseDao<Individual, Integer>, JpaReposito
         Individual doesExist(Integer userId, String firstName, String lastName, String nationalIdentity,
                         LocalDate dateOfBirth);
 
-        // @Query("Select new hrms.entities.dtos.CvDto(i.id,up.photo,ub.biography,"
-        // + "l.accountAddress,g.accountAddress,it.technology.name,il.language.name)"
+        // @Query("Select new hrms.entities.dtos.CvDto(i,up,ub,l,g,it,il)"
         // + " From User u Inner Join u.individuals i Inner Join u.userPhotos up"
         // + " Inner Join u.userBiographies ub Inner Join u.linkedinAccounts l"
-        // + " Inner Join u.githubAccounts g Inner Join
-        // u.individuals.individualTechnologies it"
-        // + " Inner Join u.individuals.individualLanguages il where i.id= :id")
+        // + " Inner Join u.githubAccounts g Inner Join"
+        // + " u.individuals.individualTechnologies it"
+        // + " Inner Join u.individuals.individualLanguages il where i.id = :id")
+        // List<CvDto> getCv(Integer id);
+
+        //   @Query("Select new hrms.entities.dtos.CvDto(i,up,ub,l,g)"
+        // + " From User u Inner Join u.individual i Inner Join u.userPhotos up"
+        // + " Inner Join u.userBiographies ub Inner Join u.linkedinAccounts l"
+        // + " Inner Join u.githubAccounts g Inner Join where i.id = :id")
         // List<CvDto> getCv(Integer id);
 }
+// Inner Join i.individualTechnologies it

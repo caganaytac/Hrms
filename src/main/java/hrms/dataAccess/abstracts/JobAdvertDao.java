@@ -3,6 +3,8 @@ package hrms.dataAccess.abstracts;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -11,13 +13,17 @@ import hrms.entities.concretes.JobAdvert;
 import hrms.entities.dtos.JobAdvertDto;
 
 public interface JobAdvertDao extends BaseDao<JobAdvert, Long>, JpaRepository<JobAdvert, Long> {
-    @Query("Select new hrms.entities.dtos.JobAdvertDto(j,up,true)"
+    @Query("Select new hrms.entities.dtos.JobAdvertDto(j,up)"
             + " From JobAdvert j Inner Join j.corporate.user.userPhotos up"
             + " where j.active = :active and up.active = :active")
     List<JobAdvertDto> getDetailsByActive(boolean active);
 
+    @Query("Select new hrms.entities.dtos.JobAdvertDto(j,up)"
+    + " From JobAdvert j Inner Join j.corporate.user.userPhotos up"
+    + " where j.active = :active and up.active = :active")
+    Page<JobAdvertDto> getDetailsByActive(boolean active, Pageable pageable);
 
-    @Query("Select new hrms.entities.dtos.JobAdvertDto(j,up,true)"
+    @Query("Select new hrms.entities.dtos.JobAdvertDto(j,up)"
             + " From JobAdvert j Inner Join j.corporate.user.userPhotos up"
             + " where j.id = :id and j.active = :active and up.active = :active")
     JobAdvertDto getDetailByIdAndActive(Long id, boolean active);
@@ -25,10 +31,15 @@ public interface JobAdvertDao extends BaseDao<JobAdvert, Long>, JpaRepository<Jo
     @Query("From JobAdvert where corporate.id = :id and active = true")
     List<JobAdvert> getByCorporateAndActive(int id);
 
-    @Query("Select new hrms.entities.dtos.JobAdvertDto(j,up,true)"
+    @Query("Select new hrms.entities.dtos.JobAdvertDto(j,up)"
             + " From JobAdvert j Inner Join j.corporate.user.userPhotos up"
             + " where j.corporate.id = :id and j.active = :active and up.active = :active")
     List<JobAdvertDto> getDetailsByCorporateAndActive(Integer id, boolean active);
+
+    @Query("Select new hrms.entities.dtos.JobAdvertDto(j,up)"
+            + " From JobAdvert j Inner Join j.corporate.user.userPhotos up"
+            + " where j.corporate.id = :id and j.active = :active and up.active = :active")
+    Page<JobAdvertDto> getDetailsByCorporateAndActive(Integer id, boolean active, Pageable pageable);
 
     @Query("From JobAdvert where corporate.id = :corporateId and jobPosition.id = :jobPositionId and city.id = :cityId and"
             + " workArea.id = :workAreaId and workTime.id = :workTimeId and minSalary = :minSalary and maxSalary = :maxSalary and"

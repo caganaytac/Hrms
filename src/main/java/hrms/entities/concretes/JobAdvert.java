@@ -5,11 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,60 +20,59 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "job_adverts")
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "verifiedJobAdverts" })
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "confirmedJobAdverts" })
 public class JobAdvert{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @NotEmpty
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "corporate_id")
     private Corporate corporate;
 
-    @NotEmpty
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "job_position_id")
     private JobPosition jobPosition;
     
-    @NotEmpty
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "city_id")
     private City city;
         
-    @NotEmpty
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "work_area_id")
     private WorkArea workArea;
         
-    @NotEmpty
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "work_time_id")
     private WorkTime workTime;
 
     @Column(name = "min_salary")
     private Double minSalary;
-             
+
     @Column(name = "max_salary")
     private Double maxSalary;
-    
-    @Length(min = 1)
-    @NotEmpty
+
+    @Min(value = 1)
+    @NotNull
     @Column(name = "open_position")
     private Short openPosition;
-    
-    @NotEmpty
+
     @Column(name = "deadline")
     private LocalDate deadline;
-               
+
     @NotEmpty
     @Column(name = "description")
     private String description;
-    
+  
     @Column(name = "status")
     private boolean status;
-    
+
     @Column(name = "create_date")
     private LocalDateTime createDate;
 
@@ -81,5 +80,5 @@ public class JobAdvert{
     private boolean active;
 
     @OneToMany(mappedBy = "jobAdvert")
-    private List<ConfirmedJobAdvert> verifiedJobAdverts;
+    private List<ConfirmedJobAdvert> confirmedJobAdverts;
 }

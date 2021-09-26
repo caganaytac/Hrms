@@ -4,7 +4,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.PageRequest;
+
 import org.springframework.stereotype.Service;
 
 import hrms.business.abstracts.JobAdvertService;
@@ -16,6 +23,7 @@ import hrms.core.utilities.results.Result;
 import hrms.core.utilities.results.SuccessDataResult;
 import hrms.core.utilities.results.SuccessResult;
 import hrms.dataAccess.abstracts.JobAdvertDao;
+import hrms.entities.concretes.Corporate;
 import hrms.entities.concretes.JobAdvert;
 import hrms.entities.dtos.JobAdvertDto;
 
@@ -23,6 +31,7 @@ import hrms.entities.dtos.JobAdvertDto;
 public class JobAdvertManager implements JobAdvertService {
     private JobAdvertDao jobAdvertDao;
     private final String JOB_ADVERT = "Job advert";
+    private final String CORPORATE = "Corporate";
 
     @Autowired
     public JobAdvertManager(JobAdvertDao jobAdvertDao) {
@@ -37,6 +46,12 @@ public class JobAdvertManager implements JobAdvertService {
     @Override
     public DataResult<List<JobAdvertDto>> getDetails() {
         return new SuccessDataResult<List<JobAdvertDto>>(this.jobAdvertDao.getDetailsByActive(true));
+    }
+
+    public DataResult<Page<JobAdvertDto>> getDetails(Integer page, Integer size, String[] sortProperties,
+            Sort.Direction sortDirection) {
+        return new SuccessDataResult<Page<JobAdvertDto>>(jobAdvertDao.getDetailsByActive(true,
+                PageRequest.of(page, size, Sort.by(sortDirection, sortProperties))));
     }
 
     @Override
@@ -60,8 +75,15 @@ public class JobAdvertManager implements JobAdvertService {
     }
 
     @Override
+    public DataResult<Page<JobAdvertDto>> getDetailsByCorporate(Integer id, Integer pageNo, Integer pageSize,
+            String[] sortProperties, Direction sortDirection) {
+        return new SuccessDataResult<Page<JobAdvertDto>>(jobAdvertDao.getDetailsByCorporateAndActive(id, true,
+                PageRequest.of(pageNo, pageSize, Sort.by(sortDirection, sortProperties))));
+    }
+
+    @Override
     public Result add(JobAdvert jobAdvert) {
-        Result result = BusinessRules.run(doesExist(jobAdvert));
+        Result result = BusinessRules.run(doesExist(jobAdvert), corporateGuard(jobAdvert.getCorporate()));
         if (result != null)
             return result;
 
@@ -74,7 +96,8 @@ public class JobAdvertManager implements JobAdvertService {
 
     @Override
     public Result update(JobAdvert jobAdvert) {
-        Result result = BusinessRules.run(doesExistById(jobAdvert.getId()), doesExist(jobAdvert));
+        Result result = BusinessRules.run(doesExistById(jobAdvert.getId()), doesExist(jobAdvert),
+                corporateGuard(jobAdvert.getCorporate()));
         if (result != null)
             return result;
 
@@ -111,8 +134,8 @@ public class JobAdvertManager implements JobAdvertService {
         Short openPosition = jobAdvert.getOpenPosition();
         LocalDate deadLine = jobAdvert.getDeadline();
         String description = jobAdvert.getDescription();
-        JobAdvert result = this.jobAdvertDao.doesExist(corporateId, jobPositionId, cityId, workAreaId, workTimeId, minSalary,
-                maxSalary, openPosition, deadLine, description);
+        JobAdvert result = this.jobAdvertDao.doesExist(corporateId, jobPositionId, cityId, workAreaId, workTimeId,
+                minSalary, maxSalary, openPosition, deadLine, description);
         if (result != null)
             return new ErrorResult(Messages.alreadyExists(JOB_ADVERT));
         return new SuccessResult();
@@ -122,6 +145,12 @@ public class JobAdvertManager implements JobAdvertService {
         JobAdvert result = this.jobAdvertDao.getByIdAndActive(id, true);
         if (result == null)
             return new ErrorResult(Messages.notFound(JOB_ADVERT));
+        return new SuccessResult();
+    }
+
+    private Result corporateGuard(@Valid Corporate corporate) {
+        if (!corporate.isConfirmed() || !corporate.isActive())
+            return new ErrorResult(Messages.notFound(CORPORATE));
         return new SuccessResult();
     }
 }

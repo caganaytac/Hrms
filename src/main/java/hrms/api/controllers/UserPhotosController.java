@@ -16,14 +16,13 @@ import org.springframework.web.multipart.MultipartFile;
 import hrms.business.abstracts.UserPhotoService;
 import hrms.core.utilities.results.DataResult;
 import hrms.core.utilities.results.Result;
-import hrms.entities.concretes.User;
 import hrms.entities.concretes.UserPhoto;
 
 @RestController
 @RequestMapping("/api/userPhotos")
 public class UserPhotosController {
-    private UserPhotoService userPhotoService;
-    private UsersController usersController;
+    private final UserPhotoService userPhotoService;
+    private final UsersController usersController;
 
     @Autowired
     public UserPhotosController(UserPhotoService userPhotoService, UsersController usersController) {
@@ -59,9 +58,7 @@ public class UserPhotosController {
     public ResponseEntity<Result> add(@RequestParam("userId") Integer userId,
             @RequestParam("file") MultipartFile multipartFile) {
         UserPhoto userPhoto = new UserPhoto();
-        User user = this.usersController.getById(userId).getBody().getData();
-        userPhoto.setUser(user);
-
+        userPhoto.setUser(this.usersController.getById(userId).getBody().getData());
         Result result = this.userPhotoService.add(userPhoto, multipartFile);
         if (result.isSuccess())
             return new ResponseEntity<Result>(result, HttpStatus.OK);

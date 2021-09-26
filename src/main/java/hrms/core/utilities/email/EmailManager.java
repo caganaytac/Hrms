@@ -43,9 +43,7 @@ public class EmailManager implements EmailService {
                 this.javaMailSender.send(message);
             }
             return new SuccessResult();
-        } catch (
-
-        MessagingException e) {
+        } catch (MessagingException e) {
             return new ErrorResult("Mail couldn't send.");
         }
     }
